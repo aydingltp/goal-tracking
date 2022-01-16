@@ -1,7 +1,9 @@
 package service
 
 import (
+	"errors"
 	"goal-tracking/models"
+	"goal-tracking/models/viewModels"
 	"gorm.io/gorm"
 )
 
@@ -11,6 +13,15 @@ type UserService struct {
 
 func NewUserService(db *gorm.DB) *UserService {
 	return &UserService{db: db}
+}
+
+func (s *UserService) Login(m *viewModels.LoginVm) (*models.User, error) {
+	user := new(models.User)
+	err := s.db.Where("email = ? and password = ?", m.EMail, m.Password).First(&user).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, err
+	}
+	return user, err
 }
 
 func (s *UserService) Create(m *models.User) error {
