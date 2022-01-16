@@ -2,9 +2,11 @@ package database
 
 import (
 	"fmt"
+	"goal-tracking/config"
 	"goal-tracking/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"strconv"
 )
 
 var db *gorm.DB
@@ -15,7 +17,10 @@ func DB() *gorm.DB {
 
 func ConnectDb() {
 	var err error
-	dsn := "host=localhost user=aydin password=1 dbname=goaltracking port=5432 sslmode=disable"
+	p := config.Config("DB_PORT")
+	port, err := strconv.ParseUint(p, 10, 32)
+	dsn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
+		config.Config("DB_HOST"), port, config.Config("DB_USER"), config.Config("DB_PASSWORD"), config.Config("DB_NAME"))
 
 	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
@@ -31,6 +36,10 @@ func ConnectDb() {
 		&models.Goal{},
 		&models.Classroom{},
 		&models.GoalDoneStatus{},
+		&models.School{},
+		&models.ClassroomTeacher{},
+		&models.ClassroomStudent{},
+		&models.ClassroomDirectory{},
 	)
 	if err != nil {
 		panic("failed migrate")
