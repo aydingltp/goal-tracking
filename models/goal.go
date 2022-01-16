@@ -19,6 +19,6 @@ type GoalDoneStatus struct {
 	gorm.Model
 	Date   time.Time `json:"dates"`
 	IsDone bool      `json:"is_done"`
-	GoalId int64     `json:"goal_id"`
+	GoalID int64     `json:"goal_id"`
 	Goal   Goal      `json:"goal"`
 }
